@@ -4,7 +4,7 @@ import {
   LoginRequestSchema,
   RegisterRequestSchema,
 } from "../../../drizzle/schemas/auth.schema.js";
-import { registerHandler } from "./auth.handlers.js";
+import { registerUser } from "./auth.handlers.js";
 import { AppError } from "../../config/AppError.js";
  
 export const authRouter = new OpenAPIHono();
@@ -49,7 +49,7 @@ authRouter.openapi(
     let body = c.req.valid("json");
 
     try {
-      let res = await registerHandler(body);
+      let res = await registerUser(body);
 
       return c.json(res, 201);
     } catch (error) {

@@ -8,6 +8,13 @@
       "when": 1775803732325,
       "tag": "0000_magenta_scourge",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1776145459005,
+      "tag": "0001_flawless_lionheart",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1776168174511,
+      "tag": "0000_furry_whirlwind",
+      "breakpoints": true
+    }
+  ]
+}

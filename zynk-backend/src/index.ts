@@ -3,13 +3,11 @@ import 'dotenv/config';
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { swaggerUI } from '@hono/swagger-ui';
 import { serve } from '@hono/node-server';
-import { loginRoute, registerRoute } from './modules/auth/auth.routes.js';
-import { loginHandler, registerHandler } from './modules/auth/auth.handlers.js';
+import { router } from './router.js';
 
 const app = new OpenAPIHono();
 
-app.openapi(registerRoute,registerHandler)
-app.openapi(loginRoute,loginHandler)
+router(app);
 
 // Documentation Endpoint
 app.doc('/doc', {

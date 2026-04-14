@@ -4,15 +4,19 @@ import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { db } from '../../db/index.js';
 import { users } from '../../../drizzle/schemas/user.schema.js';
+import { UserSchema, type RegisterRequestSchemaType } from '../../db/schema.js';
+import { BadRequestError } from '../../config/AppError.js';
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'ignis_secret_key';
 
-export const registerHandler = async (c: any) => {
-  const { name, email, password } = c.req.valid('json');
+export const registerHandler = async ({ email, name, password }: RegisterRequestSchemaType) => {
   
   const [existingUser] = await db.select().from(users).where(eq(users.email, email));
-  if (existingUser) return c.json({ error: "User already exists" }, 400);
+  
+  if(existingUser){
+    throw new BadRequestError('User With Same Email Already Exists');
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const [result] = await db.insert(users).values({ name, email, password: hashedPassword });
@@ -20,7 +24,10 @@ export const registerHandler = async (c: any) => {
   const newUser = { id: result.insertId, name, email };
   const token = await sign(newUser, JWT_SECRET);
 
-  return c.json({ token, user: newUser }, 201);
+  return {
+    token: token,
+    user: UserSchema.parse(newUser)
+  };
 };
 
 export const loginHandler = async (c: any) => {

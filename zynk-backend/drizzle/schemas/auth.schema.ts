@@ -14,6 +14,8 @@ export const RegisterRequestSchema = z.object({
   password: z.string().min(6).openapi({ example: 'strongpassword123' }),
 }).openapi('RegisterRequest');
 
+export type RegisterRequestSchemaType = z.infer<typeof RegisterRequestSchema>;
+
 // Login Request Schema
 export const LoginRequestSchema = z.object({
   email: z.string().email().openapi({ example: 'sahaj@example.com' }),

@@ -8,6 +8,9 @@ import { loginHandler, registerHandler } from './modules/auth/auth.handlers.js';
 
 const app = new OpenAPIHono();
 
+app.openapi(registerRoute,registerHandler)
+app.openapi(loginRoute,loginHandler)
+
 // Documentation Endpoint
 app.doc('/doc', {
   openapi: '3.0.0',

@@ -1,16 +1,15 @@
-import { UserSchema, type RegisterRequestSchemaType } from '../../db/schema.js';
+import { users, UserSchema, type RegisterRequestSchemaType } from '../../db/schema.js';
 import { BadRequestError } from '../../config/AppError.js';
 import { getDatabaseConnection } from '../../db/index.js';
 import bcrypt from 'bcrypt';
+import { eq } from 'drizzle-orm';
 
 export const registerUser = async ({ email, name, password }: RegisterRequestSchemaType) => {
   
   const db = await getDatabaseConnection();
   
-  let existingUser = await db.users.findOne({
-    where: {
-      email
-    }
+   const existingUser = await db.users.findOne({
+    where: { email }
   });
   
   if(existingUser){
@@ -24,6 +23,14 @@ export const registerUser = async ({ email, name, password }: RegisterRequestSch
     name: name,
     password: hashedPassword
   });
+
+  // let insertedUsers = await db.users.createMany([]);
+
+  // let newUsers = await db.users.findMany({
+  //   where:{
+  //     'id IN': insertedUsers
+  //   }
+  // })
 
   return {
     token: '',

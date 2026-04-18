@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "5986dc28-cfe5-4a07-a350-d1a492af4b9c",
+  "id": "5a75d045-b640-46a5-ac03-75b5ef35210f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "users": {
@@ -9,7 +9,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "char",
+          "type": "char(36)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

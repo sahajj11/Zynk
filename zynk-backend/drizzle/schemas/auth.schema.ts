@@ -2,7 +2,7 @@ import { z } from '@hono/zod-openapi';
 
 // User Schema for documentation
 export const UserSchema = z.object({
-  id: z.number().openapi({ example: 1 }),
+  id: z.string().openapi({ example: 1 }),
   name: z.string().openapi({ example: 'Sahaj Rajput' }),
   email: z.string().email().openapi({ example: 'sahaj@example.com' }),
 }).openapi('User');

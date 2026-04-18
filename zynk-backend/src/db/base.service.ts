@@ -15,7 +15,7 @@ import {
 } from 'drizzle-orm';
 import { v7 as uuidv7 } from 'uuid';
 import { MySqlTable, MySqlColumn, MySqlSelectBase } from 'drizzle-orm/mysql-core';
-import type { SQL } from 'drizzle-orm';
+import type { SQL, SQLWrapper } from 'drizzle-orm';
 import { getWhere } from './utils.js';
 import type { Ctx } from './types.js';
 
@@ -268,32 +268,37 @@ export class BaseService<TInsert, TSelect> {
         const insertedRows = await this.ctx.db
             .insert(this.schema)
             .values(finalData)
-            .$returningId();
 
-        if (!insertedRows || insertedRows.length === 0) {
+        if (!insertedRows[0]?.affectedRows) {
             throw new ServiceError('Error Inserting', 500, 'Insertion failed: No rows returned.');
         }
 
-        return insertedRows[0] as TSelect;
+        return await this.findById(finalData.id as string) as TSelect;
     }
 
     /**
      * Create multiple records
      */
-    async createMany(data: Omit<TInsert, 'id'>[]): Promise<TSelect[]> {
+    async createMany(data: Omit<TInsert, 'id'>[]): Promise<string[]> {
         if (!data.length) {
             throw new ServiceError('Cannot Insert Empty Values', 400);
         }
 
-        return Promise.all(
-            data.map(async (row) => {
-                const modified = this.#prepareData(row as TInsert, {
-                    isCreate: true,
-                });
-                return await this.create(modified as TInsert & { id?: string });
-            })
-        );
+        const rows = data.map((row) => {
+            return this.#prepareData(row as TInsert, { isCreate: true }) as TInsert & { id: string };
+        });
+
+        let insertedRows = await this.ctx.db.insert(this.schema).values(rows);
+
+        if (!insertedRows[0]?.affectedRows) {
+            throw new ServiceError('Error Inserting', 500, 'Insertion failed: No rows returned.');
+        }
+
+        const ids = rows.map((r) => r.id);
+
+        return ids;
     }
+
 
     /**
      * Update a single record by ID

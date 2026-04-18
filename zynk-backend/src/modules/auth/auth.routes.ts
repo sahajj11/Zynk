@@ -53,6 +53,7 @@ authRouter.openapi(
 
       return c.json(res, 201);
     } catch (error) {
+      console.log(error);
       if (error instanceof AppError) {
         return c.json(
           {
